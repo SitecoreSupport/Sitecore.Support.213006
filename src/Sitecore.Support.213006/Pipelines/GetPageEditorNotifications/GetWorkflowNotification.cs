@@ -17,7 +17,15 @@ namespace Sitecore.Support.Pipelines.GetPageEditorNotifications
   {
     // Methods
     private static string GetDescription(IWorkflow workflow, WorkflowState state, Database database) =>
-      WorkflowUtility.GetWorkflowStateDescription(workflow, state, database, "The item is in the '{0}' workflow state in the '{1}' workflow.");
+      WorkflowUtility.GetWorkflowStateDescription(workflow, state, database,
+        "The item is in the '{0}' workflow state in the '{1}' workflow.");
+    private static bool CanShowCommands(Item item, WorkflowCommand[] commands)
+    {
+      Assert.ArgumentNotNull(item, "item");
+      bool flag = Context.User.IsAdministrator || item.Locking.HasLock();
+      return WorkflowPanel.CanShowCommands(item, commands) && flag;
+    }
+
 
     public override void Process(GetPageEditorNotificationsArgs arguments)
     {
@@ -42,15 +50,17 @@ namespace Sitecore.Support.Pipelines.GetPageEditorNotifications
                   WorkflowCommand[] commandArray;
                   string description = GetDescription(workflow, state, database);
                   string icon = state.Icon;
-                  PageEditorNotification item = new PageEditorNotification(description, PageEditorNotificationType.Information)
-                  {
-                    Icon = icon
-                  };
+                  PageEditorNotification item =
+                    new PageEditorNotification(description, PageEditorNotificationType.Information)
+                    {
+                      Icon = icon
+                    };
                   using (new SecurityEnabler())
                   {
-                    commandArray = WorkflowFilterer.FilterVisibleCommands(workflow.GetCommands(contextItem), contextItem);
+                    commandArray =
+                      WorkflowFilterer.FilterVisibleCommands(workflow.GetCommands(contextItem), contextItem);
                   }
-                  if (WorkflowPanel.CanShowCommands(contextItem, commandArray))
+                  if (CanShowCommands(contextItem, commandArray))
                   {
                     foreach (WorkflowCommand command in commandArray)
                     {
