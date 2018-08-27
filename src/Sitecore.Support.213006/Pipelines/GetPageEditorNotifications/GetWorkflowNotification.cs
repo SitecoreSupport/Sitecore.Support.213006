@@ -53,6 +53,11 @@
 
                 if (WorkflowPanel.CanShowCommands(contextItem, commandArray))
                 {
+                  if(!contextItem.Locking.IsLocked())
+                  {
+                    return;
+                  }
+
                   foreach (WorkflowCommand command in commandArray)
                   {
                     string str2 = new WorkflowCommandBuilder(contextItem, workflow, command).ToString();
