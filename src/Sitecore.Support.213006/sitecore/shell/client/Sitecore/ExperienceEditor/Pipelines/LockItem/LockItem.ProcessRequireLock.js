@@ -8,21 +8,16 @@
       }
 
       if (instance.currentContext.isLocked) {
-<<<<<<< HEAD
-	
-=======
-
->>>>>>> 36b1a52560425c0c3dda59b955aad79fcad99060
         ExperienceEditor.Common.removeNotificationMessage(TranslationUtil.translateText(TranslationUtil.keys.You_must_lock_this_item_before_you_can_edit_it));
 
         instance.setHeight();
       } else {
+
         ExperienceEditor.PipelinesUtil.initAndExecutePipeline(context.app.ProcessItemRequireLockPipeline, ExperienceEditor.RibbonApp.getAppContext(null, context.app));
-<<<<<<< HEAD
-		
-=======
->>>>>>> 36b1a52560425c0c3dda59b955aad79fcad99060
+
       }
+
+        ExperienceEditor.refreshOnItem(response.context.currentContext, true);
 
       var lockCommandDependency = instance.LockCommandDependency;
       if (!lockCommandDependency) {
